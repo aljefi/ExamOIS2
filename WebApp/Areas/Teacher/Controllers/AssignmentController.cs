@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using App.DAL.EF;
 using Domain.App;
+using Microsoft.AspNetCore.Authorization;
 
-namespace WebApp.Controllers
+namespace WebApp.Areas.Teacher.Controllers
 {
+    [Area("Teacher")]
+    [Authorize(Roles = "Teacher")]
+
     public class AssignmentController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,14 +23,14 @@ namespace WebApp.Controllers
             _context = context;
         }
 
-        // GET: Assignment
+        // GET: Teacher/Assignment
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Assignments.Include(a => a.Subject);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Assignment/Details/5
+        // GET: Teacher/Assignment/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -45,14 +49,14 @@ namespace WebApp.Controllers
             return View(assignment);
         }
 
-        // GET: Assignment/Create
+        // GET: Teacher/Assignment/Create
         public IActionResult Create()
         {
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName");
             return View();
         }
 
-        // POST: Assignment/Create
+        // POST: Teacher/Assignment/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -70,7 +74,7 @@ namespace WebApp.Controllers
             return View(assignment);
         }
 
-        // GET: Assignment/Edit/5
+        // GET: Teacher/Assignment/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -87,7 +91,7 @@ namespace WebApp.Controllers
             return View(assignment);
         }
 
-        // POST: Assignment/Edit/5
+        // POST: Teacher/Assignment/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -123,7 +127,7 @@ namespace WebApp.Controllers
             return View(assignment);
         }
 
-        // GET: Assignment/Delete/5
+        // GET: Teacher/Assignment/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -142,7 +146,7 @@ namespace WebApp.Controllers
             return View(assignment);
         }
 
-        // POST: Assignment/Delete/5
+        // POST: Teacher/Assignment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

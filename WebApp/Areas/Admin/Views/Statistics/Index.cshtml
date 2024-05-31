@@ -1,4 +1,4 @@
-@model IEnumerable<Domain.App.Grade>
+@model IEnumerable<Domain.App.Statistics>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,16 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.AppUser)
+                @Html.DisplayNameFor(model => model.Subject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Assignment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateGiven)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GradeValue)
+                @Html.DisplayNameFor(model => model.AverageGrade)
             </th>
             <th></th>
         </tr>
@@ -31,16 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.AppUser.Id)
+                @Html.DisplayFor(modelItem => item.Subject.SubjectName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Assignment.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateGiven)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GradeValue)
+                @Html.DisplayFor(modelItem => item.AverageGrade)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

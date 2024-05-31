@@ -8,25 +8,26 @@ using Microsoft.EntityFrameworkCore;
 using App.DAL.EF;
 using Domain.App;
 
-namespace WebApp.Controllers
+namespace WebApp.Areas.Admin.Controllers
 {
-    public class AssignmentController : Controller
+    [Area("Admin")]
+    public class EnrollmentController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public AssignmentController(ApplicationDbContext context)
+        public EnrollmentController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Assignment
+        // GET: Admin/Enrollment
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Assignments.Include(a => a.Subject);
+            var applicationDbContext = _context.Enrollments.Include(e => e.AppUser).Include(e => e.Subject);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Assignment/Details/5
+        // GET: Admin/Enrollment/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -34,43 +35,46 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var assignment = await _context.Assignments
-                .Include(a => a.Subject)
+            var enrollment = await _context.Enrollments
+                .Include(e => e.AppUser)
+                .Include(e => e.Subject)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (assignment == null)
+            if (enrollment == null)
             {
                 return NotFound();
             }
 
-            return View(assignment);
+            return View(enrollment);
         }
 
-        // GET: Assignment/Create
+        // GET: Admin/Enrollment/Create
         public IActionResult Create()
         {
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName");
             return View();
         }
 
-        // POST: Assignment/Create
+        // POST: Admin/Enrollment/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SubjectId,Title,DueDate,Id")] Assignment assignment)
+        public async Task<IActionResult> Create([Bind("AppUserId,SubjectId,Semester,Id")] Enrollment enrollment)
         {
             if (ModelState.IsValid)
             {
-                assignment.Id = Guid.NewGuid();
-                _context.Add(assignment);
+                enrollment.Id = Guid.NewGuid();
+                _context.Add(enrollment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", assignment.SubjectId);
-            return View(assignment);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", enrollment.AppUserId);
+            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", enrollment.SubjectId);
+            return View(enrollment);
         }
 
-        // GET: Assignment/Edit/5
+        // GET: Admin/Enrollment/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -78,23 +82,24 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var assignment = await _context.Assignments.FindAsync(id);
-            if (assignment == null)
+            var enrollment = await _context.Enrollments.FindAsync(id);
+            if (enrollment == null)
             {
                 return NotFound();
             }
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", assignment.SubjectId);
-            return View(assignment);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", enrollment.AppUserId);
+            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", enrollment.SubjectId);
+            return View(enrollment);
         }
 
-        // POST: Assignment/Edit/5
+        // POST: Admin/Enrollment/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("SubjectId,Title,DueDate,Id")] Assignment assignment)
+        public async Task<IActionResult> Edit(Guid id, [Bind("AppUserId,SubjectId,Semester,Id")] Enrollment enrollment)
         {
-            if (id != assignment.Id)
+            if (id != enrollment.Id)
             {
                 return NotFound();
             }
@@ -103,12 +108,12 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(assignment);
+                    _context.Update(enrollment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AssignmentExists(assignment.Id))
+                    if (!EnrollmentExists(enrollment.Id))
                     {
                         return NotFound();
                     }
@@ -119,11 +124,12 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", assignment.SubjectId);
-            return View(assignment);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", enrollment.AppUserId);
+            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", enrollment.SubjectId);
+            return View(enrollment);
         }
 
-        // GET: Assignment/Delete/5
+        // GET: Admin/Enrollment/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -131,35 +137,36 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var assignment = await _context.Assignments
-                .Include(a => a.Subject)
+            var enrollment = await _context.Enrollments
+                .Include(e => e.AppUser)
+                .Include(e => e.Subject)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (assignment == null)
+            if (enrollment == null)
             {
                 return NotFound();
             }
 
-            return View(assignment);
+            return View(enrollment);
         }
 
-        // POST: Assignment/Delete/5
+        // POST: Admin/Enrollment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var assignment = await _context.Assignments.FindAsync(id);
-            if (assignment != null)
+            var enrollment = await _context.Enrollments.FindAsync(id);
+            if (enrollment != null)
             {
-                _context.Assignments.Remove(assignment);
+                _context.Enrollments.Remove(enrollment);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AssignmentExists(Guid id)
+        private bool EnrollmentExists(Guid id)
         {
-            return _context.Assignments.Any(e => e.Id == id);
+            return _context.Enrollments.Any(e => e.Id == id);
         }
     }
 }

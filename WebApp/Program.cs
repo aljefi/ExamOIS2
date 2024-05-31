@@ -29,7 +29,8 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 // =================================
 
-// SetupAppData(app);
+SetupAppDataAdmin(app);
+SetupAppDataTeacher(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -62,7 +63,7 @@ app.MapRazorPages();
 app.Run();
 
 
-static void SetupAppData(WebApplication app)
+static void SetupAppDataAdmin(WebApplication app)
 {
     using var serviceScope = ((IApplicationBuilder) app).ApplicationServices
         .GetRequiredService<IServiceScopeFactory>()
@@ -97,6 +98,47 @@ static void SetupAppData(WebApplication app)
 
 
     res = userManager.AddToRoleAsync(user, "Admin").Result;
+    if (!res.Succeeded)
+    {
+        Console.WriteLine(res.ToString());
+    }
+}
+
+static void SetupAppDataTeacher(WebApplication app)
+{
+    using var serviceScope = ((IApplicationBuilder) app).ApplicationServices
+        .GetRequiredService<IServiceScopeFactory>()
+        .CreateScope();
+    using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    context.Database.Migrate();
+
+    using var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    using var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+
+    var res = roleManager.CreateAsync(new AppRole()
+    {
+        Name = "Teacher"
+    }).Result;
+
+    if (!res.Succeeded)
+    {
+        Console.WriteLine(res.ToString());
+    }
+
+    var user = new AppUser()
+    {
+        Email = "teacher@eesti.ee",
+        UserName = "teacher@eesti.ee",
+    };
+    res = userManager.CreateAsync(user, "Kala.maja1").Result;
+    if (!res.Succeeded)
+    {
+        Console.WriteLine(res.ToString());
+    }
+
+
+    res = userManager.AddToRoleAsync(user, "Teacher").Result;
     if (!res.Succeeded)
     {
         Console.WriteLine(res.ToString());

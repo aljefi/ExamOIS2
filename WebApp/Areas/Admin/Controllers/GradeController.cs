@@ -8,25 +8,26 @@ using Microsoft.EntityFrameworkCore;
 using App.DAL.EF;
 using Domain.App;
 
-namespace WebApp.Controllers
+namespace WebApp.Areas.Admin.Controllers
 {
-    public class AssignmentController : Controller
+    [Area("Admin")]
+    public class GradeController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public AssignmentController(ApplicationDbContext context)
+        public GradeController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Assignment
+        // GET: Admin/Grade
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Assignments.Include(a => a.Subject);
+            var applicationDbContext = _context.Grades.Include(g => g.AppUser).Include(g => g.Assignment);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Assignment/Details/5
+        // GET: Admin/Grade/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -34,43 +35,46 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var assignment = await _context.Assignments
-                .Include(a => a.Subject)
+            var grade = await _context.Grades
+                .Include(g => g.AppUser)
+                .Include(g => g.Assignment)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (assignment == null)
+            if (grade == null)
             {
                 return NotFound();
             }
 
-            return View(assignment);
+            return View(grade);
         }
 
-        // GET: Assignment/Create
+        // GET: Admin/Grade/Create
         public IActionResult Create()
         {
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName");
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title");
             return View();
         }
 
-        // POST: Assignment/Create
+        // POST: Admin/Grade/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SubjectId,Title,DueDate,Id")] Assignment assignment)
+        public async Task<IActionResult> Create([Bind("AppUserId,AssignmentId,DateGiven,GradeValue,Id")] Grade grade)
         {
             if (ModelState.IsValid)
             {
-                assignment.Id = Guid.NewGuid();
-                _context.Add(assignment);
+                grade.Id = Guid.NewGuid();
+                _context.Add(grade);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", assignment.SubjectId);
-            return View(assignment);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
+            return View(grade);
         }
 
-        // GET: Assignment/Edit/5
+        // GET: Admin/Grade/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -78,23 +82,24 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var assignment = await _context.Assignments.FindAsync(id);
-            if (assignment == null)
+            var grade = await _context.Grades.FindAsync(id);
+            if (grade == null)
             {
                 return NotFound();
             }
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", assignment.SubjectId);
-            return View(assignment);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
+            return View(grade);
         }
 
-        // POST: Assignment/Edit/5
+        // POST: Admin/Grade/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("SubjectId,Title,DueDate,Id")] Assignment assignment)
+        public async Task<IActionResult> Edit(Guid id, [Bind("AppUserId,AssignmentId,DateGiven,GradeValue,Id")] Grade grade)
         {
-            if (id != assignment.Id)
+            if (id != grade.Id)
             {
                 return NotFound();
             }
@@ -103,12 +108,12 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(assignment);
+                    _context.Update(grade);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AssignmentExists(assignment.Id))
+                    if (!GradeExists(grade.Id))
                     {
                         return NotFound();
                     }
@@ -119,11 +124,12 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", assignment.SubjectId);
-            return View(assignment);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
+            return View(grade);
         }
 
-        // GET: Assignment/Delete/5
+        // GET: Admin/Grade/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -131,35 +137,36 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var assignment = await _context.Assignments
-                .Include(a => a.Subject)
+            var grade = await _context.Grades
+                .Include(g => g.AppUser)
+                .Include(g => g.Assignment)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (assignment == null)
+            if (grade == null)
             {
                 return NotFound();
             }
 
-            return View(assignment);
+            return View(grade);
         }
 
-        // POST: Assignment/Delete/5
+        // POST: Admin/Grade/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var assignment = await _context.Assignments.FindAsync(id);
-            if (assignment != null)
+            var grade = await _context.Grades.FindAsync(id);
+            if (grade != null)
             {
-                _context.Assignments.Remove(assignment);
+                _context.Grades.Remove(grade);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AssignmentExists(Guid id)
+        private bool GradeExists(Guid id)
         {
-            return _context.Assignments.Any(e => e.Id == id);
+            return _context.Grades.Any(e => e.Id == id);
         }
     }
 }
