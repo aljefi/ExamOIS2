@@ -50,7 +50,7 @@ namespace WebApp.Controllers
         public IActionResult Create()
         {
             ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id");
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title");
             return View();
         }
 
@@ -69,7 +69,7 @@ namespace WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id", grade.AssignmentId);
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
             return View(grade);
         }
 
@@ -87,7 +87,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
             ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id", grade.AssignmentId);
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
             return View(grade);
         }
 
@@ -124,7 +124,7 @@ namespace WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id", grade.AssignmentId);
+            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
             return View(grade);
         }
 
