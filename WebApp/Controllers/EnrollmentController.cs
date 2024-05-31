@@ -22,8 +22,8 @@ namespace WebApp.Controllers
         // GET: Enrollment
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Enrollments.Include(e => e.AppUser).Include(e => e.Subject);
-            return View(await appDbContext.ToListAsync());
+            var applicationDbContext = _context.Enrollments.Include(e => e.AppUser).Include(e => e.Subject);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Enrollment/Details/5
@@ -49,7 +49,7 @@ namespace WebApp.Controllers
         // GET: Enrollment/Create
         public IActionResult Create()
         {
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName");
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName");
             return View();
         }
@@ -68,7 +68,7 @@ namespace WebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName", enrollment.AppUserId);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", enrollment.AppUserId);
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", enrollment.SubjectId);
             return View(enrollment);
         }
@@ -86,7 +86,7 @@ namespace WebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName", enrollment.AppUserId);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", enrollment.AppUserId);
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", enrollment.SubjectId);
             return View(enrollment);
         }
@@ -123,7 +123,7 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName", enrollment.AppUserId);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", enrollment.AppUserId);
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "SubjectName", enrollment.SubjectId);
             return View(enrollment);
         }

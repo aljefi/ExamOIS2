@@ -22,8 +22,8 @@ namespace WebApp.Controllers
         // GET: Assignment
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Assignments.Include(a => a.Subject);
-            return View(await appDbContext.ToListAsync());
+            var applicationDbContext = _context.Assignments.Include(a => a.Subject);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Assignment/Details/5

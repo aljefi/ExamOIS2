@@ -22,8 +22,8 @@ namespace WebApp.Controllers
         // GET: Statistics
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Statistics.Include(s => s.Subject);
-            return View(await appDbContext.ToListAsync());
+            var applicationDbContext = _context.Statistics.Include(s => s.Subject);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Statistics/Details/5

@@ -22,8 +22,8 @@ namespace WebApp.Controllers
         // GET: Grade
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Grades.Include(g => g.AppUser).Include(g => g.Assignment);
-            return View(await appDbContext.ToListAsync());
+            var applicationDbContext = _context.Grades.Include(g => g.AppUser).Include(g => g.Assignment);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Grade/Details/5
@@ -49,7 +49,7 @@ namespace WebApp.Controllers
         // GET: Grade/Create
         public IActionResult Create()
         {
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName");
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id");
             return View();
         }
@@ -68,7 +68,7 @@ namespace WebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName", grade.AppUserId);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
             ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id", grade.AssignmentId);
             return View(grade);
         }
@@ -86,7 +86,7 @@ namespace WebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName", grade.AppUserId);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
             ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id", grade.AssignmentId);
             return View(grade);
         }
@@ -123,7 +123,7 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "FirstName", grade.AppUserId);
+            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
             ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Id", grade.AssignmentId);
             return View(grade);
         }
