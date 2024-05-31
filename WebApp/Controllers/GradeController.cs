@@ -47,86 +47,86 @@ namespace WebApp.Controllers
         }
 
         // GET: Grade/Create
-        public IActionResult Create()
-        {
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title");
-            return View();
-        }
+        // public IActionResult Create()
+        // {
+        //     ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
+        //     ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title");
+        //     return View();
+        // }
 
         // POST: Grade/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AppUserId,AssignmentId,DateGiven,GradeValue,Id")] Grade grade)
-        {
-            if (ModelState.IsValid)
-            {
-                grade.Id = Guid.NewGuid();
-                _context.Add(grade);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
-            return View(grade);
-        }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Create([Bind("AppUserId,AssignmentId,DateGiven,GradeValue,Id")] Grade grade)
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         grade.Id = Guid.NewGuid();
+        //         _context.Add(grade);
+        //         await _context.SaveChangesAsync();
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
+        //     ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
+        //     return View(grade);
+        // }
 
         // GET: Grade/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var grade = await _context.Grades.FindAsync(id);
-            if (grade == null)
-            {
-                return NotFound();
-            }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
-            return View(grade);
-        }
+        // public async Task<IActionResult> Edit(Guid? id)
+        // {
+        //     if (id == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     var grade = await _context.Grades.FindAsync(id);
+        //     if (grade == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
+        //     ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
+        //     return View(grade);
+        // }
 
         // POST: Grade/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("AppUserId,AssignmentId,DateGiven,GradeValue,Id")] Grade grade)
-        {
-            if (id != grade.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(grade);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GradeExists(grade.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
-            ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
-            return View(grade);
-        }
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Edit(Guid id, [Bind("AppUserId,AssignmentId,DateGiven,GradeValue,Id")] Grade grade)
+        // {
+        //     if (id != grade.Id)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     if (ModelState.IsValid)
+        //     {
+        //         try
+        //         {
+        //             _context.Update(grade);
+        //             await _context.SaveChangesAsync();
+        //         }
+        //         catch (DbUpdateConcurrencyException)
+        //         {
+        //             if (!GradeExists(grade.Id))
+        //             {
+        //                 return NotFound();
+        //             }
+        //             else
+        //             {
+        //                 throw;
+        //             }
+        //         }
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", grade.AppUserId);
+        //     ViewData["AssignmentId"] = new SelectList(_context.Assignments, "Id", "Title", grade.AssignmentId);
+        //     return View(grade);
+        // }
 
         // GET: Grade/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
